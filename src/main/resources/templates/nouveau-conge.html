@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout-employe}">
+<head>
+    <meta charset="utf-8" />
+    <title>EMPLOYE</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+</head>
+<body>
+    <div layout:fragment="content" class="container">
+        <h1>Demander un Congé</h1>
+        <form th:action="@{/employe/nouveauConge}" method="post">
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" class="form-control" id="description" name="description" required>
+            </div>
+            <div class="form-group">
+                <label for="dateDebut">Date de Début</label>
+                <input type="date" class="form-control" id="dateDebut" name="dateDebut" required>
+            </div>
+            <div class="form-group">
+                <label for="dateFin">Date de Fin</label>
+                <input type="date" class="form-control" id="dateFin" name="dateFin" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+        </form>
+    </div>
+</body>
+</html>

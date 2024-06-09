@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout-admin}">
+<head>
+    <meta charset="utf-8" />
+    <title layout:fragment="title">Admin Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+</head>
+<body>
+    <div layout:fragment="content" class="container">
+        <h1>Gestion des Congés</h1>
+        <form method="get" th:action="@{/admin/conges}">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="etat">État</label>
+                    <select id="etat" name="etat" class="form-control">
+                        <option value="">Tous</option>
+                        <option value="SOLLICITE" th:selected="${param.etat == 'SOLLICITE'}">SOLLICITE</option>
+                        <option value="VALIDE" th:selected="${param.etat == 'VALIDE'}">VALIDE</option>
+                        <option value="REFUSE" th:selected="${param.etat == 'REFUSE'}">REFUSE</option>
+                        <option value="ANNULE" th:selected="${param.etat == 'ANNULE'}">ANNULE</option>
+                        <option value="EN_COURS" th:selected="${param.etat == 'EN_COURS'}">EN_COURS</option>
+                        <option value="ARRETE" th:selected="${param.etat == 'ARRETE'}">ARRETE</option>
+                        <option value="FINI" th:selected="${param.etat == 'FINI'}">FINI</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="annee">Année</label>
+                    <input type="number" id="annee" name="annee" class="form-control" th:value="${param.annee}" />
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Filtrer</button>
+        </form>
+        <table class="table table-striped mt-4">
+            <thead>
+                <tr>
+                    <th>Employé</th>
+                    <th>Description</th>
+                    <th>Date Début</th>
+                    <th>Date Fin</th>
+                    <th>État</th>
+                    <th>Actions</th>
+                    <th>Date Rupture</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="conge : ${conges}">
+                    <td th:text="${conge.employe.nom} + ' ' + ${conge.employe.prenom}"></td>
+                    <td th:text="${conge.description}"></td>
+                    <td th:text="${#dates.format(conge.dateDebut, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${#dates.format(conge.dateFin, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${conge.etat}"></td>
+                    <td>
+                        <form th:action="@{/admin/conge/valider}" method="post" style="display:inline;" th:if="${conge.etat == 'SOLLICITE'}">
+                            <input type="hidden" th:value="${conge.id}" name="id" />
+                            <button type="submit" class="btn btn-success">Valider</button>
+                        </form>
+                        <form th:action="@{/admin/conge/refuser}" method="post" style="display:inline;" th:if="${conge.etat == 'SOLLICITE' || conge.etat == 'VALIDE'}">
+                            <input type="hidden" th:value="${conge.id}" name="id" />
+                            <button type="submit" class="btn btn-danger">Refuser</button>
+                        </form>
+                        <form th:action="@{/admin/conge/arreter}" method="post" style="display:inline;" th:if="${conge.etat == 'EN_COURS' }">
+                            <input type="hidden" th:value="${conge.id}" name="id" />
+                            <button type="submit" class="btn btn-warning">Arrêter</button>
+                        </form>
+                    </td>
+                    <td th:if="${conge.dateRupture != null and conge.dateRupture != ''}" th:text="${conge.dateRupture}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
